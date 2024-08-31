@@ -159,7 +159,7 @@ const getCategoryByName = async (req, res) => {
 
         // Return the found category
         return res.status(200).json({
-                success: false,
+                success: true,
                 category
             });
     } catch (error) {
