@@ -52,19 +52,38 @@ const uploadCB = async (req, res) => {
 
 // Endpoint to get the list of image URLs
 //app.get('/images', 
+// const getImages = async (req, res) => {
+//     fs.readdir('uploads/', (err, files) => {
+//         if (err) {
+//             return res.status(500).json({ message: 'Unable to scan directory', error: err });
+//         }
+//         const imageUrls = files.map(file => `http://localhost:${PORT}/uploads/${file}`);
+//         res.status(200).json({
+//             success: true,
+//             images: imageUrls
+//         });
+//     });
+
+// }
+
 const getImages = async (req, res) => {
     fs.readdir('uploads/', (err, files) => {
         if (err) {
             return res.status(500).json({ message: 'Unable to scan directory', error: err });
         }
-        const imageUrls = files.map(file => `http://localhost:${PORT}/uploads/${file}`);
+        
+        // Use the base URL from the request headers
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const imageUrls = files.map(file => `${baseUrl}/uploads/${file}`);
+        
         res.status(200).json({
             success: true,
             images: imageUrls
         });
     });
+};
 
-}
+
 const delImages = async (req, res) => {
     try {
         // Find the category with the given bannerUrl
