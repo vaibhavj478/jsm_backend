@@ -137,19 +137,31 @@ const getCategoryByName = async (req, res) => {
 
         // Validate that the name parameter is provided
         if (!name) {
-            return res.status(400).json({ message: "Category name is required" });
+            return res.status(400).json({
+                success: false,
+                message: "Category name is required"
+            });
         }
 
         // Find the category by name
-        const category = await Category.findOne({ name }, "-createdAt -updatedAt -children").populate('products');
+        const category = await Category.findOne({ name }, "-createdAt -updatedAt -children -__v").populate({
+            path: 'products',
+            select: '-createdAt -updatedAt -__v'
+        });
 
         // If the category is not found, return a 404 response
         if (!category) {
-            return res.status(404).json({ message: "Category not found" });
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
         }
 
         // Return the found category
-        return res.status(200).json(category);
+        return res.status(200).json({
+                success: false,
+                category
+            });
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error fetching category by name:", error);
